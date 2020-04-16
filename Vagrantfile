@@ -27,6 +27,10 @@ Vagrant.configure('2') do |config|
       machineconfig.vm.box = machine[:box]
 
       machineconfig.vm.provision 'shell', inline: <<-SHELL
+        source /etc/os-release
+        if [[ "$ID" == "debian" ]]; then
+          apt-get install -y curl
+        fi
         AUTO_INSTALL=y /vagrant/openvpn-install.sh
         ps aux | grep openvpn | grep -v grep > /dev/null 2>&1 && echo "Success: OpenVPN is running" && exit 0 || echo "Failure: OpenVPN is not running" && exit 1
       SHELL
